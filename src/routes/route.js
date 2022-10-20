@@ -40,4 +40,43 @@ router.get('/student-details/:name', function(req, res){
     res.send('Dummy response')
 })
 
+//Q1.
+// -write an api which gives the missing number in an array of integers starting from 1….e.g [1,2,3,5,6,7]
+// : 4 is missing
+
+router.get("/sol1", function (req, res) {
+    sum=0
+    sum1=0
+    let array = [1,2,3,4,5,6,7,] //28
+    let givenArr = [1,2,3,5,6,7] // 24
+        for(let i= 0; i<=array.length;i++){
+            sum = sum+i
+        }
+        
+        for(let i = 0; i<=givenArr.length-1;i++){
+            sum1 = sum1+givenArr[i]
+        }
+        let missingNumber = sum-sum1
+        res.send({ data: missingNumber });
+
+})
+
+router.get("/sol2", function (req, res) { 
+    sum=0 
+    sum1=0 
+    let carray = [33,34,35,36,37,38] 
+    for(i=0;i<carray.length;i++){ 
+        sum=sum + carray[i] 
+    } 
+    console.log(sum) 
+    let garray= [33,34,35,37,38] 
+    for(i=0;i<garray.length;i++){ 
+        sum1=sum1 + garray[i] 
+    } 
+    console.log(sum1); 
+    let missingNumber = (sum - sum1); 
+    console.log(missingNumber) 
+    res.send( { data: missingNumber } ); 
+    });
+
 module.exports = router;

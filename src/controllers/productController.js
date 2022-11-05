@@ -1,12 +1,13 @@
-const { count } = require("console")
 const productModel = require("../models/productModel")
 
-const createProduct= async function (req, res) {
-    let data= req.body
+const createProduct = async function (req, res) {
+    const { name, category, price } = req.body
 
-    let savedData= await productModel.create(data)
-    res.send({msg: savedData})
+    if (!name || !category || !price) {
+        return res.send({ msg: "all fields name, category and price are mandatory field" })
+    }
+    let productDetails = await productModel.create({ name, category, price })
+    return res.send({ msg: productDetails })
 }
-
 
 module.exports.createProduct = createProduct

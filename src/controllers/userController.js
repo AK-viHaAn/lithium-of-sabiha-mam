@@ -1,27 +1,16 @@
-const userModel= require("../models/userModel")
-const productModel= require("../models/productModel")
-const orderModel= require("../models/orderModel")
+const userModel = require("../models/userModel")
 
+const createUser = async function (req, res) {
+    const { name, address, balance, gender, age } = req.body
+    const isAppFreeUser = req.isAppFreeUser
+    if (!name || !address || !balance || !gender || !age) {
+        return res.send({ msg: "All field is mandatory" })
+    }
+    const userDetails = await userModel.create({ name, address, balance, gender, age })
 
-const createUser = async function (req, res){
-    let data = req.body
-
-    let savedData = await userModel.create(data)
-    res.send({user: savedData})
+    return res.send({ msg: userDetails })
 }
 
-const createProduct = async function(req, res){
-    let data = req.body
 
-    let savedData = await productModel.create(data)
-    res.send({product: savedData})
-}
-
-// const creatOrder = async function(req, res){
-//     let identity = req.body.userId
-//     let checkIdentity = await userModel.findOne({_id:identity})
-//      // if condition lagana h whi tk kre hai
-// }
-module.exports.createUser= createUser
-module.exports.createProduct= createProduct
+module.exports.createUser = createUser
 

@@ -1,46 +1,67 @@
-const { count } = require("console")
-const orderModel = require("../models/orderModel")
-const userModel = require("../models/useerModel")
-const productModel = require("../models/productModel")
+const orderModel = require('../models/orderModel')
+const userModel = require('../models/userModel')
+const productModel = require('../models/productModel')
+const mongoose = require('mongoose')
+const isValid= mongoose.Types.ObjectId.isValid
 
-const createOrder= async function (req, res) {
-    let data= req.body
-    let isFreeAppUser=req.isFreeAppUser
-    let uId=data.userId
-    let pId=data.productId
-    let amount=data.amount 
-    if(uId){
-        if(!pId){ res.send({msg: "product id is need"})}
-    }else  res.send({msg: "usre id is needed"})
 
-let user= await userModel.findById(uId)
-    
-     if(!user) {   return res.send({msg: "unvalid user id"})}
 
-let product= await productModel.findById(pId)
-    
-     if(!product) {   return res.send({msg: "unvalid product id"})}
+const createOrder = async function (req, res){
 
-     let balance =user.balance
-     let price = product.price
-     let cost=price*amount;
+    const userId = req.body.userId
 
-     if(isFreeAppUser){
-        let update= await orderModel.findByIdAndUpdate(uId,{$set:{amount:0}},{new:true})
-        let savedData= await orderModel.create(data)
-         res.send({msg: savedData, user:update})}
-     
+    const productId = req.body.productId
 
-     if(balance>cost){
-        let update= await userModel.findByIdAndUpdate(uId,{$set:{balance:(balance-cost)}},{new:true})
-        let amount= await orderModel.findByIdAndUpdate(uId,{$set:{amount:price}},{new:true})
-         let savedData= await orderModel.create(data)
-         res.send({msg: savedData, user:update})}
-        
-         else{
-            return res.send({msg: "insufficent balance"})}
+    if (!isValid(userId)) {
+        return res.send({ msg: "This is not a valid user id" })
+    }
+    if (!isValid(productId)) {
+        return res.send({ msg: "This is not a valid product id" })
+    }
+ 
+const userDetails = await userModel.findById(userId)
+
+if(!userDetails){
+    return res.send({message:"userId is not present"})
 }
-  
+
+const productdetails = await productModel.findById(productId)
+
+if(!productdetails){
+    return res.send({message:"product is not present"})
+}
+
+ const isFreeappuser = req.isFreeappuser
+
+ if(isFreeappuser){
+    const order = await orderModel.create({
+        userId:userId,
+        productId:productId,
+        amount :0,
+        isFreeappuser :isFreeappuser,
+        date:new Date()
+    })
+    return res.send({data:order})
+
+ }else{
+
+    if(userDetails.balance < productdetails.price){
+        return res.send({message:"you dont have suffiecent balance"})
+    }
+
+    const orderDetails = {
+        userId:userId,
+        productId:productId,
+        amount:productdetails.price,
+        isFreeappuser:isFreeappuser,
+        date :new Date()
+    }
+    const order = await orderModel.create(orderDetails)
+       await userModel.findByIdAndUpdate(userId,{$inc:{balance: -productdetails.price}})
+
+ return res.send({data:order})
+ }
+}
 
 
 module.exports.createOrder = createOrder

@@ -140,7 +140,7 @@ const loginUser = async function (req, res) {
 }
 
 const getUserData = async function (req, res) {
-  let token = req.headers["x-Auth-token"];
+  let token = req.headers["x-auth-token"];
   if (!token)
    res.send({ status: false, msg: "token must be present" });
   let validToken = jwt.verify(token, "secret Key");

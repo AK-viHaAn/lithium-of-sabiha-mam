@@ -17,11 +17,11 @@ const createProduct = async function(req, res){
     res.send({product: savedData})
 }
 
-const creatOrder = async function(req, res){
-    let identity = req.body.userId
-    let checkIdentity = await userModel.findOne({_id:identity})
-     // if condition lagana h whi tk kre hai
-}
+// const creatOrder = async function(req, res){
+//     let identity = req.body.userId
+//     let checkIdentity = await userModel.findOne({_id:identity})
+//      // if condition lagana h whi tk kre hai
+// }
 module.exports.createUser= createUser
 module.exports.createProduct= createProduct
 

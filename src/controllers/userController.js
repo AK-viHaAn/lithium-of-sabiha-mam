@@ -124,7 +124,7 @@ const createUser = async function (req, res) {
 
         res.status(201).send({ user: savedData });
     } catch (error) {
-        res.status(500).send({ msg: "SERVER SIGHT ISSUE" })
+        res.status(500).send({ msg: "SERVER SIGHT ISSUE", type: error.message })
     }
 };
 
@@ -144,7 +144,7 @@ const loginUser = async function (req, res) {
             res.status(200).send({ status: true, data: token });
         }
     } catch (error) {
-        res.status(500).send({ msg: "SERVER SIGHT ISSUE" })
+        res.status(500).send({ msg: "SERVER SIGHT ISSUE", type: error.message })
     }
 }
 
@@ -152,7 +152,7 @@ const getUserData = async function (req, res) {
     try {
         let token = req.headers["x-auth-token"];
         if (!token)
-        res.status(403).send({ status: false, msg: "ACCESS DENIED" ("token must be present in the request header") })
+        res.status(403).send({ status: false, msg: "ACCESS DENIED token must be present in the request header" })
         let validToken = jwt.verify(token, "secret Key");
         if (!validToken)
         res.status(400).send({ status: false, msg: "GIVEN TOKEN IS NOT VALID" })
@@ -164,7 +164,7 @@ const getUserData = async function (req, res) {
 
         res.status(200).send({ status: true, data: userDetails });
     } catch (error) {
-        res.status(500).send({ msg: "SERVER SIGHT ISSUE" })
+        res.status(500).send({ msg: "SERVER SIGHT ISSUE", type: error.message })
     }
 };
 
@@ -188,7 +188,7 @@ const updateUser = async function (req, res) {
         let updatedUser = await userModel.findOneAndUpdate({ _id: userId }, userData);
         res.status(200).send({ status: true, data: updatedUser });
     } catch (error) {
-        res.status(500).send({ msg: "SERVER SIGHT ISSUE" })
+        res.status(500).send({ msg: "SERVER SIGHT ISSUE", type: error.message })
     }
 };
 
@@ -198,7 +198,7 @@ const deleteUser = async function (req, res) {
         let deleteData = await userModel.findByIdAndUpdate(userId, { isDeleted: true }, { new: true })
         res.status(200).send({ msg: deleteData })
     } catch (error) {
-        res.status(500).send({ msg: "SERVER SIGHT ISSUE" })
+        res.status(500).send({ msg: "SERVER SIGHT ISSUE", type: error.message })
     }
 }
 
